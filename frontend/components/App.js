@@ -16,10 +16,21 @@ export default class App extends React.Component {
     };
   }
 
-  fetchAllTodos = () => {};
+  fetchAllTodos = () => {
+    axios
+      .get(URL)
+      .then((res) => {
+        this.setState({ ...this.state, todos: res.data.data });
+      })
+      .catch((err) => {
+        debugger;
+        // console.error(err)
+      });
+  };
 
   componentDidMount() {
     //fetch all todos from the server
+    this.fetchAllTodos();
   }
   //Add button functionality
   //1. setState
@@ -80,9 +91,12 @@ export default class App extends React.Component {
     return (
       <div>
         <h1> To Do List </h1>
+        {this.state.todos.map((todo) => {
+          return <div key={todo.id}>{todo.name}</div>;
+        })}
 
-        <TodoList key={todos.id} todos={todos} toggleToDo={this.toggleToDo} />
-        <Form addToDo={this.addToDo} />
+        {/* <TodoList key={todos.id} todos={todos} toggleToDo={this.toggleToDo} />
+        <Form addToDo={this.addToDo} /> */}
 
         <button onClick={this.handleClear}> Clear Tasks </button>
       </div>
