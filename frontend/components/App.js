@@ -13,8 +13,15 @@ export default class App extends React.Component {
 
     this.state = {
       todos: [],
+      error: "",
+      todoNameInput: "",
     };
   }
+
+  onTodoNameInputChange = (e) => {
+    const { value } = e.target;
+    this.setState({ ...this.state, todoNameInput: value });
+  };
 
   fetchAllTodos = () => {
     axios
@@ -23,7 +30,10 @@ export default class App extends React.Component {
         this.setState({ ...this.state, todos: res.data.data });
       })
       .catch((err) => {
-        debugger;
+        this.setState({
+          ...this.state,
+          error: err.response.data.message,
+        });
         // console.error(err)
       });
   };
@@ -90,6 +100,7 @@ export default class App extends React.Component {
     console.log(todos);
     return (
       <div>
+        <p id="error">{this.state.error} </p>
         <h1> To Do List </h1>
         {this.state.todos.map((todo) => {
           return <div key={todo.id}>{todo.name}</div>;
@@ -97,7 +108,16 @@ export default class App extends React.Component {
 
         {/* <TodoList key={todos.id} todos={todos} toggleToDo={this.toggleToDo} />
         <Form addToDo={this.addToDo} /> */}
-
+        <form>
+          <input
+            type="text"
+            placeholder="type todo"
+            name="name"
+            value={this.state.todoNameInput}
+            onChange={this.onTodoNameInputChange}
+          />
+          <button onClick={this.handleSubmit}> Add </button>
+        </form>
         <button onClick={this.handleClear}> Clear Tasks </button>
       </div>
     );
